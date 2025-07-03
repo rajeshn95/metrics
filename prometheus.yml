@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'nodejs-app'
+    static_configs:
+      - targets: ['localhost:3010']  # If using Docker
+        # or 'localhost:3000' if running locally without Docker
