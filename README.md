@@ -34,7 +34,13 @@ metrics/
 ```bash
 # Start all services (Node.js + Prometheus + Grafana)
 cd docker
+
+# Option 1: Build and start in one command
 docker compose up --build
+
+# Option 2: Clean build and start in background
+docker compose build --no-cache
+docker compose up -d
 ```
 
 ### 2. Access Services
