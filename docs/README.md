@@ -7,30 +7,34 @@ This document contains comprehensive information about the Prometheus & Grafana 
 ```
 metrics/
 ├── 📁 server/                    # Node.js application
+│   ├── Dockerfile                # Node.js container configuration
 │   ├── server.js                 # Main application with metrics
 │   ├── metrics.js                # Prometheus metrics definitions
 │   ├── index.html                # Web dashboard interface
 │   ├── dashboard.js              # Dashboard functionality
 │   ├── package.json              # Dependencies
 │   └── load-test.js              # Advanced load testing script
-├── 📁 prometheus/                # Prometheus configuration
-│   └── prometheus.yml            # Prometheus config
+├── prometheus.yml                # Prometheus configuration
+├── loki-config.yml               # Loki log aggregation config
+├── promtail-config.yml           # Promtail log collection config
 ├── 📁 grafana/                   # Grafana configuration
 │   ├── 📁 provisioning/          # Auto-configuration
-│   │   ├── 📁 datasources/       # Prometheus datasource
-│   │   │   └── prometheus.yml    # Datasource configuration
+│   │   ├── 📁 datasources/       # Data sources
+│   │   │   ├── prometheus.yml    # Prometheus datasource
+│   │   │   └── loki.yml          # Loki datasource
 │   │   └── 📁 dashboards/        # Dashboard provisioning
 │   │       └── dashboard.yml     # Dashboard provisioning config
 │   └── 📁 dashboards/            # Pre-built dashboards
 │       ├── nodejs-metrics-dashboard.json    # Main metrics dashboard
+│       ├── logs-dashboard.json              # Log monitoring dashboard
 │       └── alerts-dashboard.json            # Alerts dashboard
-├── 📁 docker/                    # Docker configuration
-│   ├── docker-compose.yml        # Multi-service setup
-│   └── Dockerfile                # Node.js container
+├── docker-compose.yml            # Multi-service setup
 ├── 📁 docs/                      # Learning documentation
 │   ├── README.md                 # This file
 │   ├── PROMETHEUS_LEARNING_GUIDE.md
 │   ├── GRAFANA_LEARNING_GUIDE.md
+│   ├── LOKI_LEARNING_GUIDE.md    # Loki log aggregation guide
+│   ├── PROMTAIL_LEARNING_GUIDE.md # Promtail log collection guide
 │   ├── DEBUGGING_PROMETHEUS.md   # Prometheus debugging guide
 │   └── DEBUGGING_GRAFANA.md      # Grafana debugging guide
 └── .gitignore                    # Git ignore rules
@@ -71,6 +75,22 @@ The project includes a beautiful **interactive web dashboard** at http://localho
 - **Gauge Panels**: CPU, memory, connection monitoring
 - **Pie Charts**: Request distribution by endpoint
 - **Dashboards**: Interactive monitoring with drill-downs
+
+### Loki Log Aggregation
+
+- **LogQL**: Powerful query language for log analysis
+- **Log Streams**: Real-time log collection and processing
+- **Log Dashboards**: Visual log monitoring and analysis
+- **Log Alerting**: Intelligent log-based alerting
+- **Container Logs**: Docker container log collection
+
+### Promtail Log Collection
+
+- **Service Discovery**: Automatic container log discovery
+- **Log Parsing**: Structured log parsing and extraction
+- **Label Management**: Dynamic log labeling and filtering
+- **Performance**: High-performance log collection
+- **Reliability**: Robust log delivery and retry mechanisms
 
 ## 🛠️ API Endpoints
 
@@ -127,6 +147,28 @@ process_resident_memory_bytes / 1024 / 1024
 active_connections
 ```
 
+### Log Analysis (LogQL)
+
+```logql
+# All logs from Node.js application
+{container="nodejs-app"}
+
+# Error logs only
+{container="nodejs-app"} |= "error"
+
+# Request logs with response time over 1 second
+{container="nodejs-app"} |= "request" | json | response_time > 1000
+
+# Log rate by log level
+rate({container="nodejs-app"} | json | level=~"error|warn"[5m])
+
+# Structured log parsing
+{container="nodejs-app"} | json | method="GET" | status_code=500
+
+# Log correlation with metrics
+{container="nodejs-app"} |= "error" | json | timestamp > "2024-01-01T00:00:00Z"
+```
+
 ## 🚨 Alerting Examples
 
 ### High Error Rate
@@ -151,6 +193,19 @@ rate(process_cpu_seconds_total[5m]) > 0.8
 
 ```promql
 process_resident_memory_bytes / 1024 / 1024 > 500
+```
+
+### Log-based Alerts (LogQL)
+
+```logql
+# High error log rate
+rate({container="nodejs-app"} |= "error"[5m]) > 10
+
+# Critical errors
+{container="nodejs-app"} |= "CRITICAL" | json | level="fatal"
+
+# Authentication failures
+{container="nodejs-app"} |= "auth" | json | success=false
 ```
 
 ## 🎨 Dashboard Types
@@ -179,6 +234,12 @@ process_resident_memory_bytes / 1024 / 1024 > 500
 - **Examples**: Request distribution by endpoint, error types
 - **Use case**: Understanding traffic patterns and issues
 
+### Log Panels 📝
+
+- **Best for**: Log stream visualization and analysis
+- **Examples**: Application logs, error logs, access logs
+- **Use case**: Debugging, troubleshooting, and audit trails
+
 ## 🏃‍♂️ Development Workflow
 
 ### Local Development
@@ -193,9 +254,8 @@ npm start
 # or
 npm run dev
 
-# Start Prometheus & Grafana separately
-cd ../docker
-docker-compose up prometheus grafana
+# Start complete monitoring stack
+docker-compose up prometheus grafana loki promtail
 ```
 
 ### Load Testing
@@ -213,7 +273,8 @@ node load-test.js stress      # Stress test (50 req/s, 20 concurrent)
 ```bash
 # Add new metrics to metrics.js
 # Modify dashboards in grafana/dashboards/
-# Update configuration in prometheus/prometheus.yml
+# Update configuration in prometheus.yml
+# Configure log collection in promtail-config.yml
 # Enhance web dashboard in index.html and dashboard.js
 ```
 
@@ -221,9 +282,10 @@ node load-test.js stress      # Stress test (50 req/s, 20 concurrent)
 
 ### Common Issues
 
-- **Port conflicts**: Change ports in `docker/docker-compose.yml`
-- **Prometheus not scraping**: Check `prometheus/prometheus.yml` configuration
+- **Port conflicts**: Change ports in `docker-compose.yml`
+- **Prometheus not scraping**: Check `prometheus.yml` configuration
 - **Grafana not loading dashboards**: Check provisioning configuration
+- **Loki not collecting logs**: Check `loki-config.yml` and `promtail-config.yml`
 - **Metrics not appearing**: Ensure `/metrics` endpoint is accessible
 - **Web dashboard issues**: Check browser console for JavaScript errors
 
@@ -232,16 +294,39 @@ node load-test.js stress      # Stress test (50 req/s, 20 concurrent)
 1. **Check targets**: http://localhost:9090/targets
 2. **Verify metrics**: http://localhost:3010/metrics
 3. **Test queries**: http://localhost:9090/graph
-4. **Check logs**: `docker-compose logs`
-5. **Web dashboard**: http://localhost:3010 (check browser console)
+4. **Check Loki**: http://localhost:3100/ready
+5. **Check logs**: `docker-compose logs`
+6. **Web dashboard**: http://localhost:3010 (check browser console)
 
-## 📚 Additional Resources
+## 📚 Learning Guides
 
-### Documentation
+### Comprehensive Documentation
+
+This project includes detailed learning guides for all components, with a focus on our specific implementation:
+
+- **[Prometheus Learning Guide](PROMETHEUS_LEARNING_GUIDE.md)** - Complete guide to Prometheus metrics, queries, and alerting
+- **[Grafana Learning Guide](GRAFANA_LEARNING_GUIDE.md)** - Dashboard creation, visualization, and best practices
+- **[Loki Learning Guide](LOKI_LEARNING_GUIDE.md)** - Log aggregation, LogQL queries, and log management with this project's specific configuration and real-world examples
+- **[Promtail Learning Guide](PROMTAIL_LEARNING_GUIDE.md)** - Log collection, service discovery, and log processing with this project's Docker setup and troubleshooting experience
+
+### What's Special About This Project's Guides
+
+This project's learning guides go beyond generic documentation by including:
+
+- **Real Configuration Examples**: The actual `loki-config.yml` and `promtail-config.yml` files with detailed explanations
+- **Project-Specific Setup**: How the Node.js application integrates with the logging stack
+- **Troubleshooting Experience**: Real issues encountered and how they were solved
+- **Practical Query Examples**: LogQL queries using the actual container names and log structure
+- **Dashboard Integration**: How the Grafana dashboards work with this specific setup
+- **Monitoring Commands**: Actual commands you can run to debug and monitor this deployment
+
+### Additional Resources
 
 - [Prometheus Documentation](https://prometheus.io/docs/)
 - [Grafana Documentation](https://grafana.com/docs/)
+- [Loki Documentation](https://grafana.com/docs/loki/latest/)
 - [PromQL Query Language](https://prometheus.io/docs/prometheus/latest/querying/)
+- [LogQL Query Language](https://grafana.com/docs/loki/latest/logql/)
 - [Node.js Prometheus Client](https://github.com/siimon/prom-client)
 
 ### Community
@@ -262,8 +347,9 @@ node load-test.js stress      # Stress test (50 req/s, 20 concurrent)
 2. **Practice with real data**: Use the load testing scripts
 3. **Create custom dashboards**: Build your own visualizations
 4. **Set up alerting**: Configure intelligent notifications
-5. **Apply to production**: Use these skills in real applications
-6. **Share your learnings**: Contribute to the community
+5. **Master log analysis**: Practice LogQL queries and log monitoring
+6. **Apply to production**: Use these skills in real applications
+7. **Share your learnings**: Contribute to the community
 
 ## 🤝 Contributing
 
