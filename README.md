@@ -27,7 +27,8 @@ metrics/
 │   └── 📁 dashboards/            # Pre-built dashboards
 │       ├── nodejs-metrics-dashboard.json    # Main metrics dashboard
 │       ├── logs-dashboard.json              # Log monitoring dashboard
-│       └── alerts-dashboard.json            # Alerts dashboard
+│       ├── alerts-dashboard.json            # Alerts dashboard
+│       └── k6-load-test-dashboard.json      # K6 load test dashboard
 ├── docker-compose.yml            # Multi-service setup
 ├── 📁 docs/                      # Learning documentation
 │   ├── README.md                 # Detailed documentation
@@ -37,6 +38,10 @@ metrics/
 │   ├── PROMTAIL_LEARNING_GUIDE.md # Promtail log collection guide
 │   ├── DEBUGGING_PROMETHEUS.md   # Prometheus debugging guide
 │   └── DEBUGGING_GRAFANA.md      # Grafana debugging guide
+├── 📁 k6/                        # K6 load testing
+│   ├── load-test.js              # Main k6 test script
+│   ├── run-test.sh               # Interactive test runner
+│   └── README.md                 # K6 setup documentation
 └── .gitignore                    # Git ignore rules
 ```
 
@@ -58,14 +63,20 @@ docker compose up --build
 ### 3. Generate Load
 
 ```bash
+# Using built-in load tester
 cd server
 node load-test.js normal  # Try: baseline, normal, high, stress
+
+# Using K6 (professional load testing)
+cd k6
+./run-test.sh  # Interactive menu with different test types
 ```
 
 ## 🎯 What You'll Learn
 
 - **Prometheus Metrics**: Counters, Gauges, Histograms, PromQL
 - **Grafana Visualization**: Time series, dashboards, alerting
+- **K6 Load Testing**: Professional load testing, performance analysis
 - **Loki Log Aggregation**: LogQL queries, log monitoring, log analysis
 - **Promtail Log Collection**: Container log collection, service discovery
 - **Real-world Monitoring**: Performance analysis, troubleshooting
@@ -119,6 +130,7 @@ node load-test.js normal  # Try: baseline, normal, high, stress
 - ✅ **Complete Monitoring Stack** - Node.js + Prometheus + Grafana + Loki + Promtail
 - ✅ **Pre-built Dashboards** - Auto-provisioned with production patterns
 - ✅ **Advanced Load Testing** - Multiple scenarios with realistic patterns
+- ✅ **K6 Load Testing** - Professional load testing with Prometheus integration
 - ✅ **Log Aggregation** - Centralized log collection and analysis
 - ✅ **Comprehensive Documentation** - Step-by-step guides and best practices
 

@@ -77,6 +77,7 @@ services:
       - "--web.console.templates=/etc/prometheus/consoles"
       - "--storage.tsdb.retention.time=200h"
       - "--web.enable-lifecycle"
+      - "--web.enable-remote-write-receiver"
     networks:
       - loki-network
     restart: unless-stopped
@@ -99,6 +100,26 @@ services:
     depends_on:
       - loki
       - prometheus
+
+  k6:
+    image: grafana/k6:latest
+    container_name: k6
+    ports:
+      - "6565:6565"
+    environment:
+      - K6_OUT=experimental-prometheus-rw=prometheus:9090/api/v1/write
+      - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
+      - K6_PROMETHEUS_RW_PUSH_INTERVAL=1s
+      - K6_PROMETHEUS_RW_TREND_STATS=p(95),p(99),min,max
+    volumes:
+      - ./k6:/scripts
+    command: run --out experimental-prometheus-rw=prometheus:9090/api/v1/write /scripts/load-test.js
+    networks:
+      - loki-network
+    depends_on:
+      - prometheus
+      - nodejs-app
+    restart: "no"
 
 networks:
   loki-network:
