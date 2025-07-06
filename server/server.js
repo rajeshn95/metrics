@@ -2,6 +2,7 @@ const express = require("express");
 const promClient = require("prom-client");
 const cors = require("cors");
 const helmet = require("helmet");
+const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3010;
@@ -10,6 +11,7 @@ const PORT = process.env.PORT || 3010;
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+app.use(express.static(__dirname));
 
 // Prometheus metrics setup
 const register = promClient.register;
@@ -184,24 +186,29 @@ app.get("/api/memory-intensive", (req, res) => {
   });
 });
 
-// Root endpoint
-app.get("/", (req, res) => {
-  res.json({
-    message: "Prometheus Metrics Learning Server",
-    version: "1.0.0",
-    endpoints: {
-      metrics: "/metrics",
-      health: "/health",
-      fast: "/api/fast",
-      medium: "/api/medium",
-      slow: "/api/slow",
-      unreliable: "/api/unreliable",
-      cpu_intensive: "/api/cpu-intensive",
-      memory_intensive: "/api/memory-intensive",
-    },
-    instructions:
-      "Use these endpoints to generate different types of load and observe metrics in Prometheus",
-  });
+// Root endpoint (remove or comment out this block)
+// app.get("/", (req, res) => {
+//   res.json({
+//     message: "Prometheus Metrics Learning Server",
+//     version: "1.0.0",
+//     endpoints: {
+//       metrics: "/metrics",
+//       health: "/health",
+//       fast: "/api/fast",
+//       medium: "/api/medium",
+//       slow: "/api/slow",
+//       unreliable: "/api/unreliable",
+//       cpu_intensive: "/api/cpu-intensive",
+//       memory_intensive: "/api/memory-intensive",
+//     },
+//     instructions:
+//       "Use these endpoints to generate different types of load and observe metrics in Prometheus",
+//   });
+// });
+
+// Serve index.html for all other routes (including '/')
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 // Start server
