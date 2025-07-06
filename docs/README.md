@@ -18,16 +18,21 @@ metrics/
 ├── 📁 grafana/                   # Grafana configuration
 │   ├── 📁 provisioning/          # Auto-configuration
 │   │   ├── 📁 datasources/       # Prometheus datasource
+│   │   │   └── prometheus.yml    # Datasource configuration
 │   │   └── 📁 dashboards/        # Dashboard provisioning
-│   ├── 📁 dashboards/            # Pre-built dashboards
-│   └── debugging-dashboard-provisioning.md
+│   │       └── dashboard.yml     # Dashboard provisioning config
+│   └── 📁 dashboards/            # Pre-built dashboards
+│       ├── nodejs-metrics-dashboard.json    # Main metrics dashboard
+│       └── alerts-dashboard.json            # Alerts dashboard
 ├── 📁 docker/                    # Docker configuration
 │   ├── docker-compose.yml        # Multi-service setup
 │   └── Dockerfile                # Node.js container
 ├── 📁 docs/                      # Learning documentation
 │   ├── README.md                 # This file
 │   ├── PROMETHEUS_LEARNING_GUIDE.md
-│   └── GRAFANA_LEARNING_GUIDE.md
+│   ├── GRAFANA_LEARNING_GUIDE.md
+│   ├── DEBUGGING_PROMETHEUS.md   # Prometheus debugging guide
+│   └── DEBUGGING_GRAFANA.md      # Grafana debugging guide
 └── .gitignore                    # Git ignore rules
 ```
 
