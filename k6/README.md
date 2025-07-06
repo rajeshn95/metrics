@@ -242,6 +242,10 @@ export const options = {
 ## Resources
 
 - [K6 Documentation](https://k6.io/docs/)
+- [K6 Getting Started](https://grafana.com/docs/k6/latest/get-started/)
 - [K6 Prometheus Integration](https://k6.io/docs/results-output/real-time/prometheus/)
 - [Grafana K6 Dashboards](https://grafana.com/grafana/dashboards/2587-k6-load-testing/)
 - [Prometheus Query Language](https://prometheus.io/docs/prometheus/latest/querying/)
+- [k6 Prometheus Dahsboard](https://grafana.com/grafana/dashboards/19665-k6-prometheus/)
+- [Pometheus Remote Write](https://grafana.com/docs/k6/latest/results-output/real-time/prometheus-remote-write/)
+- [k6 Web Dashboard](https://github.com/grafana/xk6-dashboard)
