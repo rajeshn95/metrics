@@ -9,9 +9,23 @@ const {
 const cors = require("cors");
 const helmet = require("helmet");
 const path = require("path");
+const pino = require("pino");
 
 const app = express();
+
+// Environment variables
 const PORT = process.env.PORT || 3010;
+const SERVICE_NAME = process.env.SERVICE_NAME || "payment-processor";
+
+// Configure Pino logger
+const logger = pino({
+  level: process.env.LOG_LEVEL || "info",
+  base: {
+    service: SERVICE_NAME,
+    env: process.env.NODE_ENV || "development",
+  },
+  timestamp: () => `,"timestamp":"${new Date().toISOString()}"`,
+});
 
 // Middleware
 app.use(helmet());
@@ -47,6 +61,17 @@ app.use((req, res, next) => {
 
     // Decrease active connections
     activeConnections.dec();
+  });
+
+  logger.info({
+    message: "Incoming request",
+    method: req.method,
+    path: req.path,
+    query: req.query,
+    client_ip: req.ip,
+    user_agent: req.get("User-Agent"),
+    endpoint: `${req.method} ${req.path}`,
+    event_type: "request",
   });
 
   next();
@@ -204,4 +229,11 @@ app.listen(PORT, () => {
   console.log("  GET /api/unreliable - 20% failure rate");
   console.log("  GET /api/cpu-intensive - CPU intensive operation");
   console.log("  GET /api/memory-intensive - Memory intensive operation");
+  logger.info({
+    message: `${SERVICE_NAME} started on port ${PORT}`,
+    port: PORT,
+    service: SERVICE_NAME,
+    env: process.env.NODE_ENV || "development",
+    event_type: "startup",
+  });
 });
