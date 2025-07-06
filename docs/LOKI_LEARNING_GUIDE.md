@@ -846,3 +846,4 @@ Loki provides a powerful, cost-effective solution for log aggregation. By follow
 - [LogQL Reference](https://grafana.com/docs/loki/latest/logql/)
 - [Promtail Configuration](https://grafana.com/docs/loki/latest/clients/promtail/)
 - [Grafana Loki GitHub](https://github.com/grafana/loki)
+- [loki-grafana-promtail](https://kubernetestraining.io/blog/loki-grafana-promtail-quickstart-with-docker-compose)
