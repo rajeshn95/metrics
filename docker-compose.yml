@@ -42,7 +42,7 @@ services:
     command: -config.file=/etc/loki/config.yml
     volumes:
       - ./loki-config.yml:/etc/loki/config.yml
-      - loki-data:/loki
+      - loki_data:/loki
     networks:
       - loki-network
     restart: unless-stopped
@@ -64,6 +64,7 @@ services:
 
   prometheus:
     image: prom/prometheus:latest
+    container_name: prometheus
     ports:
       - "9090:9090"
     volumes:
@@ -76,10 +77,13 @@ services:
       - "--web.console.templates=/etc/prometheus/consoles"
       - "--storage.tsdb.retention.time=200h"
       - "--web.enable-lifecycle"
+    networks:
+      - loki-network
     restart: unless-stopped
 
   grafana:
     image: grafana/grafana:latest
+    container_name: grafana
     ports:
       - "3000:3000"
     environment:
@@ -87,8 +91,8 @@ services:
       - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
       - grafana_data:/var/lib/grafana
-      - ../grafana/provisioning:/etc/grafana/provisioning
-      - ../grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
     restart: unless-stopped
     networks:
       - loki-network
@@ -103,4 +107,4 @@ networks:
 volumes:
   prometheus_data:
   grafana_data:
-  loki-data:
+  loki_data:
