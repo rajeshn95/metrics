@@ -26,43 +26,42 @@ export const options = {
 const BASE_URL = __ENV.TARGET_URL || "http://nodejs-app:3010";
 
 export default function () {
-  // Test the main endpoint
-  const mainResponse = http.get(`${BASE_URL}/`);
-  check(mainResponse, {
-    "main page status is 200": (r) => r.status === 200,
-    "main page response time < 500ms": (r) => r.timings.duration < 500,
+  // Test the /api/fast endpoint
+  const fastResponse = http.get(`${BASE_URL}/api/fast`);
+  check(fastResponse, {
+    "fast endpoint status is 200": (r) => r.status === 200,
+    "fast endpoint response time < 100ms": (r) => r.timings.duration < 100,
   });
-  errorRate.add(mainResponse.status !== 200);
-  responseTime.add(mainResponse.timings.duration);
+  errorRate.add(fastResponse.status !== 200);
+  responseTime.add(fastResponse.timings.duration);
 
-  // Test the health endpoint
-  const healthResponse = http.get(`${BASE_URL}/health`);
-  check(healthResponse, {
-    "health endpoint status is 200": (r) => r.status === 200,
-    "health endpoint response time < 200ms": (r) => r.timings.duration < 200,
+  // Test the /api/medium endpoint
+  const mediumResponse = http.get(`${BASE_URL}/api/medium`);
+  check(mediumResponse, {
+    "medium endpoint status is 200": (r) => r.status === 200,
+    "medium endpoint response time < 500ms": (r) => r.timings.duration < 500,
   });
-  errorRate.add(healthResponse.status !== 200);
-  responseTime.add(healthResponse.timings.duration);
+  errorRate.add(mediumResponse.status !== 200);
+  responseTime.add(mediumResponse.timings.duration);
 
-  // Test the metrics endpoint
-  const metricsResponse = http.get(`${BASE_URL}/metrics`);
-  check(metricsResponse, {
-    "metrics endpoint status is 200": (r) => r.status === 200,
-    "metrics endpoint contains prometheus format": (r) =>
-      r.body.includes("# HELP"),
+  // Test the /api/slow endpoint
+  const slowResponse = http.get(`${BASE_URL}/api/slow`);
+  check(slowResponse, {
+    "slow endpoint status is 200": (r) => r.status === 200,
+    "slow endpoint response time < 5000ms": (r) => r.timings.duration < 5000,
   });
-  errorRate.add(metricsResponse.status !== 200);
-  responseTime.add(metricsResponse.timings.duration);
+  errorRate.add(slowResponse.status !== 200);
+  responseTime.add(slowResponse.timings.duration);
 
-  // Test the dashboard endpoint
-  const dashboardResponse = http.get(`${BASE_URL}/dashboard`);
-  check(dashboardResponse, {
-    "dashboard endpoint status is 200": (r) => r.status === 200,
-    "dashboard endpoint response time < 1000ms": (r) =>
-      r.timings.duration < 1000,
+  // Test the /api/unreliable endpoint
+  const unreliableResponse = http.get(`${BASE_URL}/api/unreliable`);
+  check(unreliableResponse, {
+    "unreliable endpoint response time < 2000ms": (r) =>
+      r.timings.duration < 2000,
   });
-  errorRate.add(dashboardResponse.status !== 200);
-  responseTime.add(dashboardResponse.timings.duration);
+  // Note: unreliable endpoint is expected to fail sometimes, so we don't check for 200 status
+  errorRate.add(unreliableResponse.status !== 200);
+  responseTime.add(unreliableResponse.timings.duration);
 
   // Simulate some load with random delays
   sleep(Math.random() * 2 + 1); // Random sleep between 1-3 seconds
