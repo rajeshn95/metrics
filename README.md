@@ -34,7 +34,7 @@ metrics/
 ```bash
 # Start all services (Node.js + Prometheus + Grafana)
 cd docker
-docker-compose up --build
+docker compose up --build
 ```
 
 ### 2. Access Services
