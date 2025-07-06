@@ -27,7 +27,7 @@ A comprehensive Node.js application designed to help you learn Prometheus metric
 - `http_request_duration_seconds` - Request duration histogram
 - `http_requests_total` - Total request counter
 - `active_connections` - Active connections gauge
-- `business_operations_total` - Business operation counter
+- `operation_count_total` - Total operation counter
 
 ## 🛠️ API Endpoints
 
@@ -207,7 +207,7 @@ active_connections
 ### Business Operations by Type
 
 ```
-business_operations_total
+operation_count_total
 ```
 
 ## 🎨 Grafana Visualization Types to Learn
@@ -234,7 +234,7 @@ business_operations_total
 
 - **Best for**: Distribution of values
 - **Use cases**: Request distribution by endpoint, error types
-- **Example**: `business_operations_total`
+- **Example**: `operation_count_total`
 
 ### 5. Tables
 

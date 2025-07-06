@@ -1,5 +1,11 @@
 const express = require("express");
 const promClient = require("prom-client");
+const {
+  httpRequestDurationMicroseconds,
+  httpRequestsTotal,
+  activeConnections,
+  operationCounter,
+} = require("./metrics");
 const cors = require("cors");
 const helmet = require("helmet");
 const path = require("path");
@@ -18,31 +24,6 @@ const register = promClient.register;
 
 // Enable default metrics (CPU, memory, etc.)
 promClient.collectDefaultMetrics({ register });
-
-// Custom metrics
-const httpRequestDurationMicroseconds = new promClient.Histogram({
-  name: "http_request_duration_seconds",
-  help: "Duration of HTTP requests in seconds",
-  labelNames: ["method", "route", "status_code"],
-  buckets: [0.1, 0.5, 1, 2, 5],
-});
-
-const httpRequestsTotal = new promClient.Counter({
-  name: "http_requests_total",
-  help: "Total number of HTTP requests",
-  labelNames: ["method", "route", "status_code"],
-});
-
-const activeConnections = new promClient.Gauge({
-  name: "active_connections",
-  help: "Number of active connections",
-});
-
-const customBusinessMetric = new promClient.Counter({
-  name: "business_operations_total",
-  help: "Total number of business operations",
-  labelNames: ["operation_type"],
-});
 
 // Middleware to track metrics
 app.use((req, res, next) => {
@@ -88,7 +69,7 @@ app.get("/health", (req, res) => {
 
 // Fast API endpoint (for baseline performance)
 app.get("/api/fast", (req, res) => {
-  customBusinessMetric.labels("fast_operation").inc();
+  operationCounter.labels("fast_operation").inc();
   res.json({
     message: "Fast response",
     timestamp: new Date().toISOString(),
@@ -98,7 +79,7 @@ app.get("/api/fast", (req, res) => {
 
 // Medium API endpoint (simulates some processing)
 app.get("/api/medium", async (req, res) => {
-  customBusinessMetric.labels("medium_operation").inc();
+  operationCounter.labels("medium_operation").inc();
 
   // Simulate some processing time
   await new Promise((resolve) =>
@@ -115,7 +96,7 @@ app.get("/api/medium", async (req, res) => {
 
 // Slow API endpoint (simulates heavy processing)
 app.get("/api/slow", async (req, res) => {
-  customBusinessMetric.labels("slow_operation").inc();
+  operationCounter.labels("slow_operation").inc();
 
   // Simulate heavy processing
   await new Promise((resolve) =>
@@ -132,7 +113,7 @@ app.get("/api/slow", async (req, res) => {
 
 // Error-prone endpoint (randomly fails)
 app.get("/api/unreliable", (req, res) => {
-  customBusinessMetric.labels("unreliable_operation").inc();
+  operationCounter.labels("unreliable_operation").inc();
 
   // 20% chance of failure
   if (Math.random() < 0.2) {
@@ -152,7 +133,7 @@ app.get("/api/unreliable", (req, res) => {
 
 // CPU intensive endpoint
 app.get("/api/cpu-intensive", (req, res) => {
-  customBusinessMetric.labels("cpu_intensive_operation").inc();
+  operationCounter.labels("cpu_intensive_operation").inc();
 
   // Simulate CPU intensive work
   const start = Date.now();
@@ -172,7 +153,7 @@ app.get("/api/cpu-intensive", (req, res) => {
 
 // Memory intensive endpoint
 app.get("/api/memory-intensive", (req, res) => {
-  customBusinessMetric.labels("memory_intensive_operation").inc();
+  operationCounter.labels("memory_intensive_operation").inc();
 
   // Simulate memory usage
   const largeArray = new Array(1000000).fill(0).map((_, i) => i);

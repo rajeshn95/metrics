@@ -55,7 +55,7 @@ open http://localhost:3000
 
 - **Best for**: Distribution of values
 - **Examples**: Request distribution by endpoint, error types
-- **PromQL Example**: `business_operations_total`
+- **PromQL Example**: `operation_count_total`
 
 #### 5. **Tables** 📋
 

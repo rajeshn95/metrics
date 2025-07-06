@@ -1,34 +1,42 @@
 {
-  "uid": "nodejs-metrics-dashboard",
-  "title": "Node.js Prometheus Metrics Dashboard",
-  "tags": ["nodejs", "prometheus", "performance"],
-  "style": "dark",
-  "timezone": "browser",
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 3,
+  "links": [],
   "panels": [
     {
-      "id": 1,
-      "title": "Request Rate",
-      "type": "stat",
-      "targets": [
-        {
-          "expr": "rate(http_requests_total[5m])",
-          "legendFormat": "{{method}} {{route}}",
-          "refId": "A"
-        }
-      ],
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
-          "custom": {
-            "displayMode": "list"
-          },
+          "mappings": [],
           "thresholds": {
+            "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -36,40 +44,62 @@
               }
             ]
           }
-        }
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
         "y": 0
-      }
-    },
-    {
-      "id": 2,
-      "title": "Response Time (95th Percentile)",
-      "type": "stat",
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "rate(http_requests_total[5m])",
           "legendFormat": "{{method}} {{route}}",
           "refId": "A"
         }
       ],
+      "title": "Request Rate",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
-          "custom": {
-            "displayMode": "list"
-          },
-          "unit": "s",
+          "mappings": [],
           "thresholds": {
+            "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "yellow",
@@ -80,40 +110,64 @@
                 "value": 3
               }
             ]
-          }
-        }
+          },
+          "unit": "s"
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 12,
         "y": 0
-      }
-    },
-    {
-      "id": 3,
-      "title": "Error Rate",
-      "type": "stat",
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
       "targets": [
         {
-          "expr": "rate(http_requests_total{status_code=~\"5..\"}[5m])",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))",
           "legendFormat": "{{method}} {{route}}",
           "refId": "A"
         }
       ],
+      "title": "Response Time (95th Percentile)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
-          "custom": {
-            "displayMode": "list"
-          },
+          "mappings": [],
           "thresholds": {
+            "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -121,40 +175,64 @@
               }
             ]
           }
-        }
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
         "y": 8
-      }
-    },
-    {
-      "id": 4,
-      "title": "Success Rate",
-      "type": "stat",
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
       "targets": [
         {
-          "expr": "(rate(http_requests_total{status_code=~\"2..\"}[5m]) / rate(http_requests_total[5m])) * 100",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "rate(http_requests_total{status_code=~\"5..\"}[5m])",
           "legendFormat": "{{method}} {{route}}",
           "refId": "A"
         }
       ],
+      "title": "Error Rate",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
-          "custom": {
-            "displayMode": "list"
-          },
-          "unit": "percent",
+          "mappings": [],
+          "max": 100,
+          "min": 0,
           "thresholds": {
+            "mode": "absolute",
             "steps": [
               {
-                "color": "red",
-                "value": null
+                "color": "red"
               },
               {
                 "color": "yellow",
@@ -165,41 +243,193 @@
                 "value": 99
               }
             ]
-          }
-        }
+          },
+          "unit": "percent"
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 12,
         "y": 8
-      }
-    },
-    {
-      "id": 5,
-      "title": "CPU Usage",
-      "type": "gauge",
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
       "targets": [
         {
-          "expr": "rate(process_cpu_seconds_total[5m]) * 100",
-          "legendFormat": "CPU Usage %",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "(rate(http_requests_total{status_code=~\"2..\"}[5m]) / rate(http_requests_total[5m])) * 100",
+          "legendFormat": "{{method}} {{route}}",
           "refId": "A"
         }
       ],
+      "title": "Success Rate",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "description": "total event count",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "custom": {
-            "displayMode": "gauge"
-          },
-          "unit": "percent",
+          "mappings": [],
           "thresholds": {
+            "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(operation_count_total)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "{{operation_type}}",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Total Operation Counts",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "description": "Total count by operation type",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "operation_count_total",
+          "legendFormat": "{{operation_type}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Total Count By Operation Type",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
               },
               {
                 "color": "yellow",
@@ -210,41 +440,62 @@
                 "value": 90
               }
             ]
-          }
-        }
+          },
+          "unit": "percent"
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 16
-      }
-    },
-    {
-      "id": 6,
-      "title": "Memory Usage",
-      "type": "gauge",
+        "y": 24
+      },
+      "id": 5,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.0.2",
       "targets": [
         {
-          "expr": "process_resident_memory_bytes / 1024 / 1024",
-          "legendFormat": "Memory Usage (MB)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "rate(process_cpu_seconds_total[5m]) * 100",
+          "legendFormat": "CPU Usage %",
           "refId": "A"
         }
       ],
+      "title": "CPU Usage",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "custom": {
-            "displayMode": "gauge"
-          },
-          "unit": "bytes",
+          "mappings": [],
           "thresholds": {
+            "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "yellow",
@@ -255,22 +506,61 @@
                 "value": 1000
               }
             ]
-          }
-        }
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 16
-      }
+        "y": 24
+      },
+      "id": 6,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "process_resident_memory_bytes / 1024 / 1024",
+          "legendFormat": "Memory Usage (MB)",
+          "refId": "A"
+        }
+      ],
+      "title": "Memory Usage",
+      "type": "gauge"
     }
   ],
+  "preload": false,
+  "refresh": "10s",
+  "schemaVersion": 41,
+  "tags": ["nodejs", "prometheus", "performance"],
+  "templating": {
+    "list": []
+  },
   "time": {
-    "from": "now-1h",
+    "from": "now-5m",
     "to": "now"
   },
-  "refresh": "10s",
-  "schemaVersion": 27,
-  "version": 1
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Node.js Prometheus Metrics Dashboard",
+  "uid": "nodejs-metrics-dashboard",
+  "version": 5
 }
