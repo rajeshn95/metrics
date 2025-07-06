@@ -77,14 +77,14 @@ curl -v http://localhost:3010/metrics
   scrape_configs:
     - job_name: "nodejs-app"
       static_configs:
-        - targets: ["docker-nodejs-app-1:3010"]
+        - targets: ["nodejs-app:3010"]
   ```
 - **Reason:** `localhost` inside the Prometheus container does not refer to the Node.js app container. Use the container name for Docker networking.
 
 ### 9. Test connectivity from Prometheus container to Node.js app container
 
 ```sh
-docker exec docker-prometheus-1 wget --spider http://docker-nodejs-app-1:3010/metrics
+docker exec docker-prometheus-1 wget --spider http://nodejs-app:3010/metrics
 ```
 
 - **Result:** `remote file exists` (connectivity confirmed).
@@ -126,7 +126,7 @@ curl -v http://localhost:3010/metrics
 ps aux | grep node
 docker ps | cat
 docker logs docker-nodejs-app-1 --tail 50 | cat
-docker exec docker-prometheus-1 wget --spider http://docker-nodejs-app-1:3010/metrics
+docker exec docker-prometheus-1 wget --spider http://nodejs-app:3010/metrics
 docker restart docker-prometheus-1
 sleep 10
 ```
