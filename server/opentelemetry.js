@@ -7,7 +7,9 @@ const {
   SemanticResourceAttributes,
 } = require("@opentelemetry/semantic-conventions");
 const { PrometheusExporter } = require("@opentelemetry/exporter-prometheus");
-const { JaegerExporter } = require("@opentelemetry/exporter-jaeger");
+const {
+  OTLPTraceExporter,
+} = require("@opentelemetry/exporter-trace-otlp-http");
 const { BatchSpanProcessor } = require("@opentelemetry/sdk-trace-node");
 const { MeterProvider } = require("@opentelemetry/sdk-metrics");
 
@@ -33,9 +35,9 @@ const prometheusExporter = new PrometheusExporter({
   appendTimestamp: true,
 });
 
-// Configure Jaeger exporter for traces
-const jaegerExporter = new JaegerExporter({
-  endpoint: JAEGER_ENDPOINT,
+// Configure OTLP exporter for traces
+const otlpExporter = new OTLPTraceExporter({
+  url: JAEGER_ENDPOINT,
 });
 
 // Create meter provider
@@ -50,7 +52,7 @@ metrics.setGlobalMeterProvider(meterProvider);
 // Create and configure the NodeSDK
 const sdk = new NodeSDK({
   resource: resource,
-  spanProcessor: new BatchSpanProcessor(jaegerExporter),
+  spanProcessor: new BatchSpanProcessor(otlpExporter),
   instrumentations: [
     getNodeAutoInstrumentations({
       // Enable all auto-instrumentations
@@ -75,7 +77,7 @@ try {
   console.log(
     `Prometheus metrics available at http://localhost:${PROMETHEUS_PORT}/metrics`
   );
-  console.log(`Jaeger traces being sent to: ${JAEGER_ENDPOINT}`);
+  console.log(`OTLP traces being sent to: ${JAEGER_ENDPOINT}`);
 } catch (error) {
   console.error("Error initializing OpenTelemetry SDK:", error);
 }
@@ -92,4 +94,4 @@ process.on("SIGTERM", () => {
   }
 });
 
-module.exports = { sdk, prometheusExporter, jaegerExporter };
+module.exports = { sdk, prometheusExporter, otlpExporter };
