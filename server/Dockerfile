@@ -28,8 +28,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install dependencies and add curl for debugging
-RUN npm install && \
-    apk add --no-cache curl
+RUN npm install --legacy-peer-deps && apk add --no-cache curl
 
 COPY . .
 
