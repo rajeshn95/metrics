@@ -1,4 +1,7 @@
+version: "3.8"
+
 services:
+  # Node.js application
   nodejs-app:
     build:
       context: ./server
@@ -6,74 +9,23 @@ services:
     container_name: nodejs-app
     ports:
       - "3010:3010"
-      - "9464:9464"
     environment:
       - NODE_ENV=production
       - PORT=3010
       - SERVICE_NAME=nodejs-app
-      - LOG_LEVEL=info
-      - JAEGER_ENDPOINT=http://jaeger:4318/v1/traces
-      - PROMETHEUS_PORT=9464
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318
     networks:
-      - loki-network
-    depends_on:
-      - loki
-      - jaeger
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "node",
-          "-e",
-          "require('http').get('http://localhost:3010/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })",
-        ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-  loki:
-    image: grafana/loki:2.9.0
-    container_name: loki
-    ports:
-      - "3100:3100"
-    command: -config.file=/etc/loki/config.yml
-    volumes:
-      - ./loki-config.yml:/etc/loki/config.yml
-      - loki_data:/loki
-    networks:
-      - loki-network
+      - jaeger-network
     restart: unless-stopped
 
-  promtail:
-    image: grafana/promtail:2.9.0
-    container_name: promtail
-    user: "0:0" # Run as root to ensure access
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./promtail-config.yml:/etc/promtail/config.yml
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-    command: -config.file=/etc/promtail/config.yml
-    networks:
-      - loki-network
-    depends_on:
-      - loki
-    restart: unless-stopped
-
+  # Prometheus for metrics
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v2.51.2
     container_name: prometheus
     ports:
       - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
@@ -81,72 +33,36 @@ services:
       - "--web.console.templates=/etc/prometheus/consoles"
       - "--storage.tsdb.retention.time=200h"
       - "--web.enable-lifecycle"
-      - "--web.enable-remote-write-receiver"
     networks:
-      - loki-network
+      - jaeger-network
     restart: unless-stopped
 
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_USERS_ALLOW_SIGN_UP=false
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
-      - ./grafana/dashboards:/var/lib/grafana/dashboards
-    restart: unless-stopped
-    networks:
-      - loki-network
-    depends_on:
-      - loki
-      - prometheus
-
+  # Jaeger with SPM support
   jaeger:
-    image: jaegertracing/all-in-one:latest
+    image: jaegertracing/jaeger:latest
     container_name: jaeger
-    ports:
-      - "16686:16686"
-      - "14268:14268"
-      - "14250:14250"
-      - "4317:4317"
-      - "4318:4318"
     environment:
-      - COLLECTOR_OTLP_ENABLED=true
-      - COLLECTOR_OTLP_HTTP_PORT=4318
-      - COLLECTOR_OTLP_GRPC_PORT=4317
-    networks:
-      - loki-network
-    restart: unless-stopped
-
-  k6:
-    image: grafana/k6:latest
-    container_name: k6
-    ports:
-      - "6565:6565"
-    environment:
-      - K6_OUT=experimental-prometheus-rw=prometheus:9090/api/v1/write
-      - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
-      - K6_PROMETHEUS_RW_PUSH_INTERVAL=1s
-      - K6_PROMETHEUS_RW_TREND_STATS=p(95),p(99),min,max
+      - SPAN_STORAGE_TYPE=memory
+      - METRICS_STORAGE_TYPE=prometheus
+      - PROMETHEUS_SERVER_URL=http://prometheus:9090
+      - PROMETHEUS_QUERY_TIMEOUT=30s
+      - PROMETHEUS_QUERY_LOOKBACK=1h
     volumes:
-      - ./k6:/scripts
-    command: run --out experimental-prometheus-rw=prometheus:9090/api/v1/write /scripts/load-test.js
+      - ./jaeger-config.yaml:/etc/jaeger/config.yml
+      - ./ui-config.json:/etc/jaeger/jaeger-ui.json
+    command: ["--config", "/etc/jaeger/config.yml"]
+    ports:
+      - "16686:16686" # Jaeger UI
+      - "8888:8888" # Jaeger metrics
+      - "8889:8889" # Collector metrics
+      - "4317:4317" # OTLP gRPC
+      - "4318:4318" # OTLP HTTP
     networks:
-      - loki-network
+      - jaeger-network
     depends_on:
       - prometheus
-      - nodejs-app
-    restart: "no"
+    restart: unless-stopped
 
 networks:
-  loki-network:
+  jaeger-network:
     driver: bridge
-
-volumes:
-  prometheus_data:
-  grafana_data:
-  loki_data:

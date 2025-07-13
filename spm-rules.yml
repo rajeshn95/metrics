@@ -1,0 +1,5 @@
+groups:
+  - name: jaeger-spm-compat
+    rules:
+      - record: traces_span_metrics_calls
+        expr: traces_span_metrics_calls_total 

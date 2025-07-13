@@ -1,18 +1,11 @@
 global:
   scrape_interval: 5s
 
+rule_files:
+  - 'spm-rules.yml'
+
 scrape_configs:
-  - job_name: 'nodejs-app'
+  - job_name: 'jaeger-spm-metrics'
     static_configs:
-      - targets: ['nodejs-app:3010']
-  
-  - job_name: 'nodejs-app-opentelemetry'
-    static_configs:
-      - targets: ['nodejs-app:9464']
-    metrics_path: '/metrics'
+      - targets: ['jaeger:8889']
     scrape_interval: 5s
-  
-  - job_name: 'k6'
-    static_configs:
-      - targets: ['k6:6565']
-    scrape_interval: 1s

@@ -17,8 +17,8 @@ const { MeterProvider } = require("@opentelemetry/sdk-metrics");
 const SERVICE_NAME = process.env.SERVICE_NAME || "metrics-testing";
 const SERVICE_VERSION = process.env.SERVICE_VERSION || "1.0.0";
 const ENVIRONMENT = process.env.NODE_ENV || "development";
-const JAEGER_ENDPOINT =
-  process.env.JAEGER_ENDPOINT || "http://jaeger:14268/api/traces";
+const OTEL_COLLECTOR_ENDPOINT =
+  process.env.OTEL_COLLECTOR_ENDPOINT || "jaeger:4318";
 const PROMETHEUS_PORT = process.env.PROMETHEUS_PORT || 9464;
 
 // Create resource with service information
@@ -35,9 +35,9 @@ const prometheusExporter = new PrometheusExporter({
   appendTimestamp: true,
 });
 
-// Configure OTLP exporter for traces
+// Configure OTLP HTTP exporter for traces
 const otlpExporter = new OTLPTraceExporter({
-  url: JAEGER_ENDPOINT,
+  url: `http://${OTEL_COLLECTOR_ENDPOINT}/v1/traces`,
 });
 
 // Create meter provider
@@ -77,7 +77,18 @@ try {
   console.log(
     `Prometheus metrics available at http://localhost:${PROMETHEUS_PORT}/metrics`
   );
-  console.log(`OTLP traces being sent to: ${JAEGER_ENDPOINT}`);
+  console.log(
+    `OTLP HTTP traces being sent to: http://${OTEL_COLLECTOR_ENDPOINT}/v1/traces`
+  );
+
+  // Manual test span
+  const { trace } = require("@opentelemetry/api");
+  const tracer = trace.getTracer("manual-test");
+  const span = tracer.startSpan("manual-test-span", { kind: 1 });
+  setTimeout(() => {
+    span.end();
+    console.log("Manual test span ended");
+  }, 1000);
 } catch (error) {
   console.error("Error initializing OpenTelemetry SDK:", error);
 }

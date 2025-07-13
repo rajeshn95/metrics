@@ -104,6 +104,7 @@ function otelMiddleware(req, res, next) {
 
   // Create span for the request
   const span = tracer.startSpan(`${req.method} ${req.path}`, {
+    kind: 1, // SERVER
     attributes: {
       ...spanAttributes,
       "http.method": req.method,
