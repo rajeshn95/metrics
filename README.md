@@ -105,45 +105,6 @@ docker compose run --rm k6 run --duration 30s --vus 3 /scripts/load-test.js
 | `/api/cpu-intensive`    | Variable    | CPU stress testing             |
 | `/api/memory-intensive` | Variable    | Memory stress testing          |
 
-## 📚 Learning Path
-
-### Week 1: Fundamentals
-
-1. Start the stack and explore the web dashboard
-2. Read `docs/LEARNING_GUIDE_PROMETHEUS.md`
-3. Practice basic queries in Prometheus UI
-4. Generate load and observe metrics
-
-### Week 2: Visualization
-
-1. Read `docs/LEARNING_GUIDE_GRAFANA.md`
-2. Explore pre-built dashboards in Grafana
-3. Create custom dashboards
-4. Set up basic alerting
-
-### Week 3: Log Monitoring
-
-1. Read `docs/LEARNING_GUIDE_LOKI.md`
-2. Read `docs/LEARNING_GUIDE_PROMTAIL.md`
-3. Explore log dashboards in Grafana
-4. Practice LogQL queries
-
-### Week 4: OpenTelemetry & Load Testing
-
-1. Read `docs/LEARNING_GUIDE_OPENTELEMETRY.md`
-2. Read `docs/LEARNING_GUIDE_K6.md`
-3. Explore distributed tracing in Jaeger UI
-4. Analyze OpenTelemetry metrics in Grafana
-5. Practice K6 load testing scenarios
-
-### Week 5+: Advanced Topics
-
-1. Master PromQL advanced queries
-2. Master LogQL for log analysis
-3. Design production dashboards
-4. Configure comprehensive alerting
-5. Apply to real applications
-
 ## 🎨 Key Features
 
 - ✅ **Interactive Web Dashboard** - Real-time monitoring interface
@@ -154,40 +115,6 @@ docker compose run --rm k6 run --duration 30s --vus 3 /scripts/load-test.js
 - ✅ **K6 Load Testing** - Professional load testing with Prometheus integration
 - ✅ **Log Aggregation** - Centralized log collection and analysis
 - ✅ **Comprehensive Documentation** - Step-by-step guides and best practices
-
-## 🔍 Essential Queries
-
-### Metrics (PromQL)
-
-```promql
-# Request rate
-rate(http_requests_total[5m])
-
-# Error rate
-rate(http_requests_total{status_code=~"5.."}[5m])
-
-# 95th percentile response time
-histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))
-
-# CPU usage
-rate(process_cpu_seconds_total[5m]) * 100
-```
-
-### Logs (LogQL)
-
-```logql
-# All logs from Node.js app
-{container="nodejs-app"}
-
-# Error logs
-{container="nodejs-app"} |= "error"
-
-# Request logs with response time
-{container="nodejs-app"} |= "request" | json | response_time > 1000
-
-# Log rate by level
-rate({container="nodejs-app"} | json | level=~"error|warn"[5m])
-```
 
 ## 🏃‍♂️ Development
 
