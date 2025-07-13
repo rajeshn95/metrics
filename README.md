@@ -36,17 +36,19 @@ metrics/
 ├── docker-compose.yml            # Multi-service setup
 ├── 📁 docs/                      # Learning documentation
 │   ├── README.md                 # Detailed documentation
-│   ├── PROMETHEUS_LEARNING_GUIDE.md
-│   ├── GRAFANA_LEARNING_GUIDE.md
-│   ├── LOKI_LEARNING_GUIDE.md    # Loki log aggregation guide
-│   ├── PROMTAIL_LEARNING_GUIDE.md # Promtail log collection guide
+│   ├── LEARNING_GUIDE_PROMETHEUS.md
+│   ├── LEARNING_GUIDE_GRAFANA.md
+│   ├── LEARNING_GUIDE_LOKI.md    # Loki log aggregation guide
+│   ├── LEARNING_GUIDE_PROMTAIL.md # Promtail log collection guide
+│   ├── LEARNING_GUIDE_K6.md      # K6 load testing guide
+│   ├── LEARNING_GUIDE_OPENTELEMETRY.md # OpenTelemetry implementation guide
 │   ├── DEBUGGING_PROMETHEUS.md   # Prometheus debugging guide
 │   ├── DEBUGGING_GRAFANA.md      # Grafana debugging guide
-│   └── OPENTELEMETRY_IMPLEMENTATION.md # OpenTelemetry implementation guide
+│   ├── DEBUGGING_K6.md           # K6 debugging guide
+│   └── DEBUGGING_JAEGER.md       # Jaeger debugging guide
 ├── 📁 k6/                        # K6 load testing
 │   ├── load-test.js              # Main k6 test script
-│   ├── run-test.sh               # Interactive test runner
-│   └── README.md                 # K6 setup documentation
+│   └── run-test.sh               # Interactive test runner
 └── .gitignore                    # Git ignore rules
 ```
 
@@ -108,31 +110,31 @@ docker compose run --rm k6 run --duration 30s --vus 3 /scripts/load-test.js
 ### Week 1: Fundamentals
 
 1. Start the stack and explore the web dashboard
-2. Read `docs/PROMETHEUS_LEARNING_GUIDE.md`
+2. Read `docs/LEARNING_GUIDE_PROMETHEUS.md`
 3. Practice basic queries in Prometheus UI
 4. Generate load and observe metrics
 
 ### Week 2: Visualization
 
-1. Read `docs/GRAFANA_LEARNING_GUIDE.md`
+1. Read `docs/LEARNING_GUIDE_GRAFANA.md`
 2. Explore pre-built dashboards in Grafana
 3. Create custom dashboards
 4. Set up basic alerting
 
 ### Week 3: Log Monitoring
 
-1. Read `docs/LOKI_LEARNING_GUIDE.md`
-2. Read `docs/PROMTAIL_LEARNING_GUIDE.md`
+1. Read `docs/LEARNING_GUIDE_LOKI.md`
+2. Read `docs/LEARNING_GUIDE_PROMTAIL.md`
 3. Explore log dashboards in Grafana
 4. Practice LogQL queries
 
-### Week 4: OpenTelemetry
+### Week 4: OpenTelemetry & Load Testing
 
-1. Read `docs/OPENTELEMETRY_IMPLEMENTATION.md`
-2. Explore distributed tracing in Jaeger UI
-3. Analyze OpenTelemetry metrics in Grafana
-4. Understand auto-instrumentation
-5. Practice custom instrumentation
+1. Read `docs/LEARNING_GUIDE_OPENTELEMETRY.md`
+2. Read `docs/LEARNING_GUIDE_K6.md`
+3. Explore distributed tracing in Jaeger UI
+4. Analyze OpenTelemetry metrics in Grafana
+5. Practice K6 load testing scenarios
 
 ### Week 5+: Advanced Topics
 
@@ -218,11 +220,12 @@ node load-test.js stress      # Stress test
 For comprehensive guides and detailed information, see:
 
 - `docs/README.md` - Complete project documentation
-- `docs/PROMETHEUS_LEARNING_GUIDE.md` - Prometheus learning guide
-- `docs/GRAFANA_LEARNING_GUIDE.md` - Grafana learning guide
-- `docs/LOKI_LEARNING_GUIDE.md` - Loki log aggregation guide
-- `docs/PROMTAIL_LEARNING_GUIDE.md` - Promtail log collection guide
-- `docs/OPENTELEMETRY_IMPLEMENTATION.md` - OpenTelemetry implementation guide
+- `docs/LEARNING_GUIDE_PROMETHEUS.md` - Prometheus learning guide
+- `docs/LEARNING_GUIDE_GRAFANA.md` - Grafana learning guide
+- `docs/LEARNING_GUIDE_LOKI.md` - Loki log aggregation guide
+- `docs/LEARNING_GUIDE_PROMTAIL.md` - Promtail log collection guide
+- `docs/LEARNING_GUIDE_K6.md` - K6 load testing guide
+- `docs/LEARNING_GUIDE_OPENTELEMETRY.md` - OpenTelemetry implementation guide
 
 ## 🤝 Contributing
 

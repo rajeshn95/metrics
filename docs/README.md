@@ -10,6 +10,9 @@ metrics/
 │   ├── Dockerfile                # Node.js container configuration
 │   ├── server.js                 # Main application with metrics
 │   ├── metrics.js                # Prometheus metrics definitions
+│   ├── opentelemetry.js          # OpenTelemetry configuration
+│   ├── telemetry.js              # Custom telemetry utilities
+│   ├── test-opentelemetry.js     # OpenTelemetry test script
 │   ├── index.html                # Web dashboard interface
 │   ├── dashboard.js              # Dashboard functionality
 │   ├── package.json              # Dependencies
@@ -27,16 +30,25 @@ metrics/
 │   └── 📁 dashboards/            # Pre-built dashboards
 │       ├── nodejs-metrics-dashboard.json    # Main metrics dashboard
 │       ├── logs-dashboard.json              # Log monitoring dashboard
-│       └── alerts-dashboard.json            # Alerts dashboard
+│       ├── alerts-dashboard.json            # Alerts dashboard
+│       ├── k6-load-test-dashboard.json      # K6 load test dashboard
+│       └── opentelemetry-dashboard.json     # OpenTelemetry metrics dashboard
 ├── docker-compose.yml            # Multi-service setup
 ├── 📁 docs/                      # Learning documentation
 │   ├── README.md                 # This file
-│   ├── PROMETHEUS_LEARNING_GUIDE.md
-│   ├── GRAFANA_LEARNING_GUIDE.md
-│   ├── LOKI_LEARNING_GUIDE.md    # Loki log aggregation guide
-│   ├── PROMTAIL_LEARNING_GUIDE.md # Promtail log collection guide
+│   ├── LEARNING_GUIDE_PROMETHEUS.md
+│   ├── LEARNING_GUIDE_GRAFANA.md
+│   ├── LEARNING_GUIDE_LOKI.md    # Loki log aggregation guide
+│   ├── LEARNING_GUIDE_PROMTAIL.md # Promtail log collection guide
+│   ├── LEARNING_GUIDE_K6.md      # K6 load testing guide
+│   ├── LEARNING_GUIDE_OPENTELEMETRY.md # OpenTelemetry implementation guide
 │   ├── DEBUGGING_PROMETHEUS.md   # Prometheus debugging guide
-│   └── DEBUGGING_GRAFANA.md      # Grafana debugging guide
+│   ├── DEBUGGING_GRAFANA.md      # Grafana debugging guide
+│   ├── DEBUGGING_K6.md           # K6 debugging guide
+│   └── DEBUGGING_JAEGER.md       # Jaeger debugging guide
+├── 📁 k6/                        # K6 load testing
+│   ├── load-test.js              # Main k6 test script
+│   └── run-test.sh               # Interactive test runner
 └── .gitignore                    # Git ignore rules
 ```
 
@@ -304,10 +316,12 @@ node load-test.js stress      # Stress test (50 req/s, 20 concurrent)
 
 This project includes detailed learning guides for all components, with a focus on our specific implementation:
 
-- **[Prometheus Learning Guide](PROMETHEUS_LEARNING_GUIDE.md)** - Complete guide to Prometheus metrics, queries, and alerting
-- **[Grafana Learning Guide](GRAFANA_LEARNING_GUIDE.md)** - Dashboard creation, visualization, and best practices
-- **[Loki Learning Guide](LOKI_LEARNING_GUIDE.md)** - Log aggregation, LogQL queries, and log management with this project's specific configuration and real-world examples
-- **[Promtail Learning Guide](PROMTAIL_LEARNING_GUIDE.md)** - Log collection, service discovery, and log processing with this project's Docker setup and troubleshooting experience
+- **[Prometheus Learning Guide](LEARNING_GUIDE_PROMETHEUS.md)** - Complete guide to Prometheus metrics, queries, and alerting
+- **[Grafana Learning Guide](LEARNING_GUIDE_GRAFANA.md)** - Dashboard creation, visualization, and best practices
+- **[Loki Learning Guide](LEARNING_GUIDE_LOKI.md)** - Log aggregation, LogQL queries, and log management with this project's specific configuration and real-world examples
+- **[Promtail Learning Guide](LEARNING_GUIDE_PROMTAIL.md)** - Log collection, service discovery, and log processing with this project's Docker setup and troubleshooting experience
+- **[K6 Learning Guide](LEARNING_GUIDE_K6.md)** - Professional load testing with K6, performance analysis, and Prometheus integration
+- **[OpenTelemetry Learning Guide](LEARNING_GUIDE_OPENTELEMETRY.md)** - Distributed tracing, custom metrics, auto-instrumentation, and observability implementation
 
 ### What's Special About This Project's Guides
 
