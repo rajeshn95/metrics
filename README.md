@@ -1,10 +1,5 @@
 # Prometheus, Grafana & OpenTelemetry Learning Project
 
-<!-- [![GitHub stars](https://img.shields.io/github/stars/rajeshn95/metrics?style=social)](https://github.com/rajeshn95/metrics)
-[![GitHub forks](https://img.shields.io/github/forks/rajeshn95/metrics?style=social)](https://github.com/rajeshn95/metrics)
-[![GitHub issues](https://img.shields.io/github/issues/rajeshn95/metrics)](https://github.com/rajeshn95/metrics/issues)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/rajeshn95/metrics)](https://github.com/rajeshn95/metrics/pulls) -->
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Docker](https://img.shields.io/badge/Docker-Required-blue.svg)](https://www.docker.com/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
@@ -256,6 +251,25 @@ If this project helped you learn monitoring and observability, please:
 - 🤝 **Contribute back**
 
 **Every star motivates us to create better learning content!** 🌟
+
+## 👥 **Contributors**
+
+<div align="center">
+  <a href="https://github.com/rajeshn95/metrics/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=rajeshn95/metrics" alt="Contributors" />
+  </a>
+</div>
+
+### 🌟 **Special Thanks**
+
+We'd like to thank all contributors who help make this learning project better:
+
+- **Documentation Contributors** - Improving guides and explanations
+- **Code Contributors** - Adding features and fixing bugs
+- **Community Members** - Providing feedback and suggestions
+- **Learning Advocates** - Sharing knowledge and best practices
+
+_Want to see your name here? Check out our [Contributing Guidelines](CONTRIBUTING.md)!_
 
 ---
 
