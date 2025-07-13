@@ -1,6 +1,6 @@
-# Prometheus & Grafana Learning Project
+# Prometheus, Grafana & OpenTelemetry Learning Project
 
-A comprehensive Node.js application designed to help you learn **Prometheus metrics collection**, **Grafana visualization**, and **Loki log aggregation** for complete application monitoring. Features an interactive web dashboard and complete monitoring stack.
+A comprehensive Node.js application designed to help you learn **Prometheus metrics collection**, **Grafana visualization**, **Loki log aggregation**, and **OpenTelemetry distributed tracing** for complete application monitoring. Features an interactive web dashboard and complete monitoring stack with modern observability practices.
 
 ## 🏗️ Project Structure
 
@@ -10,6 +10,9 @@ metrics/
 │   ├── Dockerfile                # Node.js container configuration
 │   ├── server.js                 # Main application with metrics
 │   ├── metrics.js                # Prometheus metrics definitions
+│   ├── opentelemetry.js          # OpenTelemetry configuration
+│   ├── telemetry.js              # Custom telemetry utilities
+│   ├── test-opentelemetry.js     # OpenTelemetry test script
 │   ├── index.html                # Web dashboard interface
 │   ├── dashboard.js              # Dashboard functionality
 │   ├── package.json              # Dependencies
@@ -28,7 +31,8 @@ metrics/
 │       ├── nodejs-metrics-dashboard.json    # Main metrics dashboard
 │       ├── logs-dashboard.json              # Log monitoring dashboard
 │       ├── alerts-dashboard.json            # Alerts dashboard
-│       └── k6-load-test-dashboard.json      # K6 load test dashboard
+│       ├── k6-load-test-dashboard.json      # K6 load test dashboard
+│       └── opentelemetry-dashboard.json     # OpenTelemetry metrics dashboard
 ├── docker-compose.yml            # Multi-service setup
 ├── 📁 docs/                      # Learning documentation
 │   ├── README.md                 # Detailed documentation
@@ -37,7 +41,8 @@ metrics/
 │   ├── LOKI_LEARNING_GUIDE.md    # Loki log aggregation guide
 │   ├── PROMTAIL_LEARNING_GUIDE.md # Promtail log collection guide
 │   ├── DEBUGGING_PROMETHEUS.md   # Prometheus debugging guide
-│   └── DEBUGGING_GRAFANA.md      # Grafana debugging guide
+│   ├── DEBUGGING_GRAFANA.md      # Grafana debugging guide
+│   └── OPENTELEMETRY_IMPLEMENTATION.md # OpenTelemetry implementation guide
 ├── 📁 k6/                        # K6 load testing
 │   ├── load-test.js              # Main k6 test script
 │   ├── run-test.sh               # Interactive test runner
@@ -59,6 +64,7 @@ docker compose up --build
 - **Prometheus**: http://localhost:9090
 - **Grafana**: http://localhost:3000 (admin/admin)
 - **Loki**: http://localhost:3100
+- **Jaeger UI**: http://localhost:16686 (Distributed tracing)
 
 ### 3. Generate Load
 
@@ -70,12 +76,16 @@ node load-test.js normal  # Try: baseline, normal, high, stress
 # Using K6 (professional load testing)
 cd k6
 ./run-test.sh  # Interactive menu with different test types
+
+# Using docker
+docker compose run --rm k6 run --duration 30s --vus 3 /scripts/load-test.js
 ```
 
 ## 🎯 What You'll Learn
 
 - **Prometheus Metrics**: Counters, Gauges, Histograms, PromQL
 - **Grafana Visualization**: Time series, dashboards, alerting
+- **OpenTelemetry**: Distributed tracing, custom metrics, auto-instrumentation
 - **K6 Load Testing**: Professional load testing, performance analysis
 - **Loki Log Aggregation**: LogQL queries, log monitoring, log analysis
 - **Promtail Log Collection**: Container log collection, service discovery
@@ -116,7 +126,15 @@ cd k6
 3. Explore log dashboards in Grafana
 4. Practice LogQL queries
 
-### Week 4+: Advanced Topics
+### Week 4: OpenTelemetry
+
+1. Read `docs/OPENTELEMETRY_IMPLEMENTATION.md`
+2. Explore distributed tracing in Jaeger UI
+3. Analyze OpenTelemetry metrics in Grafana
+4. Understand auto-instrumentation
+5. Practice custom instrumentation
+
+### Week 5+: Advanced Topics
 
 1. Master PromQL advanced queries
 2. Master LogQL for log analysis
@@ -127,7 +145,8 @@ cd k6
 ## 🎨 Key Features
 
 - ✅ **Interactive Web Dashboard** - Real-time monitoring interface
-- ✅ **Complete Monitoring Stack** - Node.js + Prometheus + Grafana + Loki + Promtail
+- ✅ **Complete Monitoring Stack** - Node.js + Prometheus + Grafana + Loki + Promtail + Jaeger
+- ✅ **OpenTelemetry Integration** - Distributed tracing, custom metrics, auto-instrumentation
 - ✅ **Pre-built Dashboards** - Auto-provisioned with production patterns
 - ✅ **Advanced Load Testing** - Multiple scenarios with realistic patterns
 - ✅ **K6 Load Testing** - Professional load testing with Prometheus integration
@@ -176,6 +195,9 @@ cd server
 npm install
 npm start
 
+# Test OpenTelemetry implementation
+node test-opentelemetry.js
+
 # Load testing scenarios
 node load-test.js baseline    # Light load
 node load-test.js normal      # Normal load
@@ -200,6 +222,7 @@ For comprehensive guides and detailed information, see:
 - `docs/GRAFANA_LEARNING_GUIDE.md` - Grafana learning guide
 - `docs/LOKI_LEARNING_GUIDE.md` - Loki log aggregation guide
 - `docs/PROMTAIL_LEARNING_GUIDE.md` - Promtail log collection guide
+- `docs/OPENTELEMETRY_IMPLEMENTATION.md` - OpenTelemetry implementation guide
 
 ## 🤝 Contributing
 

@@ -6,6 +6,12 @@ scrape_configs:
     static_configs:
       - targets: ['nodejs-app:3010']
   
+  - job_name: 'nodejs-app-opentelemetry'
+    static_configs:
+      - targets: ['nodejs-app:9464']
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+  
   - job_name: 'k6'
     static_configs:
       - targets: ['k6:6565']

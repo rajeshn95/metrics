@@ -1,3 +1,6 @@
+// Initialize OpenTelemetry first
+require("./opentelemetry");
+
 const express = require("express");
 const promClient = require("prom-client");
 const {
@@ -10,12 +13,18 @@ const cors = require("cors");
 const helmet = require("helmet");
 const path = require("path");
 const pino = require("pino");
+const {
+  otelMiddleware,
+  recordOperation,
+  simulateDatabaseOperation,
+  simulateExternalApiCall,
+} = require("./telemetry");
 
 const app = express();
 
 // Environment variables
 const PORT = process.env.PORT || 3010;
-const SERVICE_NAME = process.env.SERVICE_NAME || "payment-processor";
+const SERVICE_NAME = process.env.SERVICE_NAME || "metrics-testing";
 
 // Configure Pino logger
 const logger = pino({
@@ -32,6 +41,9 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
+
+// OpenTelemetry middleware (must be after basic middleware but before route handlers)
+app.use(otelMiddleware);
 
 // Prometheus metrics setup
 const register = promClient.register;
@@ -144,6 +156,17 @@ app.get("/health", (req, res) => {
     version: "1.0.0",
     uptime: process.uptime(),
     memory: process.memoryUsage(),
+    env: process.env.NODE_ENV || "development",
+    endpoints: {
+      metrics: "/metrics",
+      health: "/health",
+      fast: "/api/fast",
+      medium: "/api/medium",
+      slow: "/api/slow",
+      unreliable: "/api/unreliable",
+      cpu_intensive: "/api/cpu-intensive",
+      memory_intensive: "/api/memory-intensive",
+    },
   };
 
   res.json(healthStatus);
@@ -167,6 +190,13 @@ app.get("/api/fast", (req, res) => {
     timestamp: new Date().toISOString(),
   });
 
+  // Record operation with OpenTelemetry
+  recordOperation("fast_operation", {
+    endpoint: "/api/fast",
+    performance: "instant",
+  });
+
+  // Also increment Prometheus counter for backward compatibility
   operationCounter.labels("fast_operation").inc();
 
   const response = {
@@ -198,18 +228,35 @@ app.get("/api/medium", async (req, res) => {
     timestamp: new Date().toISOString(),
   });
 
+  // Record operation with OpenTelemetry
+  recordOperation("medium_operation", {
+    endpoint: "/api/medium",
+    performance: "medium",
+  });
+
+  // Also increment Prometheus counter for backward compatibility
   operationCounter.labels("medium_operation").inc();
 
-  // Simulate some processing time
-  const processingTime = 100 + Math.random() * 200;
-  await new Promise((resolve) => setTimeout(resolve, processingTime));
+  // Simulate database operation with tracing
+  const dbResult = await simulateDatabaseOperation(
+    "read_user_data",
+    50 + Math.random() * 100,
+    req.span
+  );
+
+  // Simulate some additional processing time
+  const additionalProcessingTime = 50 + Math.random() * 100;
+  await new Promise((resolve) => setTimeout(resolve, additionalProcessingTime));
 
   const response = {
     message: "Medium response",
     timestamp: new Date().toISOString(),
     performance: "medium",
     processing_time: "100-300ms",
-    actual_processing_time_ms: Math.round(processingTime),
+    actual_processing_time_ms: Math.round(
+      dbResult.duration + additionalProcessingTime
+    ),
+    database_operation: "completed",
   };
 
   res.json(response);
@@ -218,7 +265,9 @@ app.get("/api/medium", async (req, res) => {
   logger.info({
     message: "Medium API endpoint completed",
     endpoint: "/api/medium",
-    processing_time_ms: Math.round(processingTime),
+    processing_time_ms: Math.round(
+      dbResult.duration + additionalProcessingTime
+    ),
     total_duration_ms: totalDuration,
     event_type: "api_medium_end",
     timestamp: new Date().toISOString(),
@@ -236,18 +285,39 @@ app.get("/api/slow", async (req, res) => {
     timestamp: new Date().toISOString(),
   });
 
+  // Record operation with OpenTelemetry
+  recordOperation("slow_operation", {
+    endpoint: "/api/slow",
+    performance: "slow",
+  });
+
+  // Also increment Prometheus counter for backward compatibility
   operationCounter.labels("slow_operation").inc();
 
-  // Simulate heavy processing
-  const processingTime = 1000 + Math.random() * 2000;
-  await new Promise((resolve) => setTimeout(resolve, processingTime));
+  // Simulate complex workflow with multiple operations
+  const dbResult = await simulateDatabaseOperation(
+    "complex_query",
+    300 + Math.random() * 500,
+    req.span
+  );
+  const externalApiResult = await simulateExternalApiCall(
+    "payment_processor",
+    400 + Math.random() * 600,
+    req.span
+  );
+  const additionalProcessingTime = 300 + Math.random() * 600;
+  await new Promise((resolve) => setTimeout(resolve, additionalProcessingTime));
 
   const response = {
     message: "Slow response",
     timestamp: new Date().toISOString(),
     performance: "slow",
     processing_time: "1-3 seconds",
-    actual_processing_time_ms: Math.round(processingTime),
+    actual_processing_time_ms: Math.round(
+      dbResult.duration + externalApiResult.duration + additionalProcessingTime
+    ),
+    database_operation: "completed",
+    external_api_call: "completed",
   };
 
   res.json(response);
@@ -256,7 +326,9 @@ app.get("/api/slow", async (req, res) => {
   logger.info({
     message: "Slow API endpoint completed",
     endpoint: "/api/slow",
-    processing_time_ms: Math.round(processingTime),
+    processing_time_ms: Math.round(
+      dbResult.duration + externalApiResult.duration + additionalProcessingTime
+    ),
     total_duration_ms: totalDuration,
     event_type: "api_slow_end",
     timestamp: new Date().toISOString(),
@@ -402,26 +474,6 @@ app.get("/api/memory-intensive", (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
-
-// Root endpoint (remove or comment out this block)
-// app.get("/", (req, res) => {
-//   res.json({
-//     message: "Prometheus Metrics Learning Server",
-//     version: "1.0.0",
-//     endpoints: {
-//       metrics: "/metrics",
-//       health: "/health",
-//       fast: "/api/fast",
-//       medium: "/api/medium",
-//       slow: "/api/slow",
-//       unreliable: "/api/unreliable",
-//       cpu_intensive: "/api/cpu-intensive",
-//       memory_intensive: "/api/memory-intensive",
-//     },
-//     instructions:
-//       "Use these endpoints to generate different types of load and observe metrics in Prometheus",
-//   });
-// });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
