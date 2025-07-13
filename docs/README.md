@@ -1,5 +1,7 @@
 # Complete Project Documentation
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 This document contains comprehensive information about the Prometheus & Grafana Learning Project, including detailed guides, advanced topics, and troubleshooting.
 
 ## 🏗️ Project Structure

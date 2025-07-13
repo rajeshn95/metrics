@@ -1,5 +1,7 @@
 # Prometheus, Grafana & OpenTelemetry Learning Project
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A comprehensive Node.js application designed to help you learn **Prometheus metrics collection**, **Grafana visualization**, **Loki log aggregation**, and **OpenTelemetry distributed tracing** for complete application monitoring. Features an interactive web dashboard and complete monitoring stack with modern observability practices.
 
 ## 🏗️ Project Structure
