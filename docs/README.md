@@ -1,6 +1,9 @@
 # Complete Project Documentation
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Documentation](https://img.shields.io/badge/Documentation-Complete-blue.svg)](https://github.com/rajeshn95/metrics/tree/main/docs)
+[![Learning Guides](https://img.shields.io/badge/Learning%20Guides-6%20Topics-green.svg)](https://github.com/rajeshn95/metrics/tree/main/docs)
+[![Debugging Guides](https://img.shields.io/badge/Debugging%20Guides-4%20Topics-orange.svg)](https://github.com/rajeshn95/metrics/tree/main/docs)
 
 This document contains comprehensive information about the Prometheus & Grafana Learning Project, including detailed guides, advanced topics, and troubleshooting.
 

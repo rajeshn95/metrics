@@ -49,7 +49,7 @@ Thank you for your interest in contributing to this learning project! This proje
 1. **Fork and Clone**
 
    ```bash
-   git clone https://github.com/your-username/metrics.git
+   git clone https://github.com/rajeshn95/metrics.git
    cd metrics
    ```
 
