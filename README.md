@@ -290,9 +290,9 @@ _Want to see your name here? Check out our [Contributing Guidelines](CONTRIBUTIN
   
   <em>Complete foundation for learning modern application monitoring with Prometheus, Grafana, and Loki.</em>
   
-  <br><br>
+  <!-- <br><br> -->
   
-  <a href="https://github.com/rajeshn95/metrics">
+  <!-- <a href="https://github.com/rajeshn95/metrics">
     <img src="https://img.shields.io/badge/GitHub-View%20on%20GitHub-black?style=for-the-badge&logo=github" alt="View on GitHub">
-  </a>
+  </a> -->
 </div>
